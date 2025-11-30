@@ -2,7 +2,7 @@ public class FunTimeAttackAuraRotation {
     
     private final Minecraft mc = Minecraft.getMinecraft();
     private long lastAttackTime = 0;
-    private final long attackDelay = 55; // Основная задержка для FunTime
+    private final long attackDelay = 55;
     private int tickCounter = 0;
     
     public void onTick() {
@@ -19,7 +19,6 @@ public class FunTimeAttackAuraRotation {
     private void executeRotation() {
         long currentTime = System.currentTimeMillis();
         
-        // Проверяем минимальную задержку между атаками
         if (currentTime - lastAttackTime < attackDelay) {
             return;
         }
@@ -27,10 +26,8 @@ public class FunTimeAttackAuraRotation {
         Entity target = getBestTarget();
         if (target == null) return;
         
-        // Ротация на цель
         rotateToTarget(target);
         
-        // Выполняем атаку с динамической задержкой
         long attackDelayVariation = calculateOptimalDelay(target);
         
         if (currentTime - lastAttackTime >= attackDelayVariation) {
@@ -43,17 +40,14 @@ public class FunTimeAttackAuraRotation {
     private long calculateOptimalDelay(Entity target) {
         tickCounter++;
         
-        // Динамическая задержка в зависимости от условий боя
         if (target.hurtResistantTime > 10) {
-            // Цель недавно получила урон - увеличиваем задержку
             return 70 + (target.hurtResistantTime % 20) * 2;
         }
         
-        // Базовая ротация для FunTime
         if (tickCounter % 20 < 10) {
-            return 55; // Быстрая ротация
+            return 55;
         } else {
-            return 65; // Чуть большая задержка для обхода проверок
+            return 65;
         }
     }
     
@@ -63,14 +57,12 @@ public class FunTimeAttackAuraRotation {
         float yaw = rotations[0];
         float pitch = rotations[1];
         
-        // Плавная ротация
         float currentYaw = mc.thePlayer.rotationYaw;
         float currentPitch = mc.thePlayer.rotationPitch;
         
         float yawDiff = MathHelper.wrapAngleTo180_float(yaw - currentYaw);
         float pitchDiff = MathHelper.wrapAngleTo180_float(pitch - currentPitch);
         
-        // Ограничиваем скорость поворота
         float maxYawChange = 25.0f;
         float maxPitchChange = 15.0f;
         
